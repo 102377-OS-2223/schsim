@@ -47,6 +47,7 @@ void initProcTable(Process *procTable){
         p.life = 0;
         procTable[i]=p;
     }
+    /*És la diapositiva 15 de la setmana 11. Les dades introduïdes següents:*/
     procTable[0].burst=7;
     procTable[0].time=0;
     procTable[1].burst = 4;
