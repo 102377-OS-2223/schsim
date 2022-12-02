@@ -1,24 +1,25 @@
-#define E 0
-#define W 1
-#define P 2
-#define F 3
+#ifndef __PROCESS__
+#define __PROCESS__
+
+
+// Process
+// Ready (P): The process is waiting for the scheduler. 
+// Running (E): The process consumes CPU 
+// Blocked (W): The process does input/output operations. 
+// Finished (F): The process finishes its work.
+enum processStatus{Ready, Running, Bloqued, Finished};
+
 
 typedef struct process
 {
-    char * name;
+    char* name;
     int time;
     int burst;
     int id;
     int * life;
 } Process;
 
-/* Donat un arxiu processos.csv amb el format:
-    0;A;0;7
-    Haurà de generar processos. */
+void printProcess(Process proces);
+void cleanProcess(Process proces);
 
-Process *procTable;
-
-Process readProcess(); //Fila 1
-
-
-
+#endif

@@ -1,57 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "string.h"
 #include "process.h"
-#include<stdlib.h>
-#include<stdio.h>
-//FCFS
-Process* procTable;
-int bufsize =100;
+#include "log.h"
+#include "dispatcher.h"
+#include <getopt.h>
+
+#define OPTSTR "a:f:m:vh"
+
+void clean(void);
+void usage(void);
+
+// Parameters
+char *filename = NULL;
+char *algorithm = NULL;
+char *modality = NULL;
+bool verbose = false;
+
+int main(int argc, char *argv[]){
+
+    int opt;
+    while ((opt = getopt(argc, argv, OPTSTR)) != EOF)
+        switch(opt) {
+            case 'h': usage(); 
+                clean(); 
+                return EXIT_SUCCESS;
+                break;  
+            case 'v':
+                verbose = true;
+                break;
+            case 'f': 
+                    filename = strdup(optarg); 
+                break;
+            case 'a':
+                    for (int i = 0; i < num_algorithms(); i++) {
+                        if (strcmp(optarg, algorithmsNames[i]) == 0) {
+                            algorithm = strdup(optarg); 
+                            break;
+                        }
+                    }
+                     if (algorithm == NULL){
+                        fprintf(stderr, "No such algorithm: %s\n", optarg);
+                        clean();
+                        return EXIT_FAILURE;
+                    }
+                    break;
+            case 'm':
+                    for (int i = 0; i < num_modalities(); i++) {
+                        if (strcmp(optarg, modalitiesNames[i]) == 0) {
+                            modality = strdup(optarg);
+                            break;
+                        }
+                    }
+                    if (modality == NULL){
+                        fprintf(stderr, "No such modality: %s\n", optarg);
+                        clean();
+                        return EXIT_FAILURE;
+                    }
+                    break;
+    }
+
+    log_set_quiet(!verbose);
 
 
-void initProcTable(Process * procTable);
-void fcfs(Process * procTable);
-
-int main(int argc, char* argv[]){
-    
-    initProcTable(procTable);
-
-    int * life;
-    
-    //for(int i = 0; i < procTable->id;i++){
-    //    printf("Process %d: %d\n", i, procTable->processes[i].pid);
-   // }
-
+    //@Jordi: Aqui cridem a la funció del dispatcher en funció dels paràmetres ara simplemnt crido a la funció
+    Process* procTable; 
+    size_t nprocs = initProcTable(&procTable);
+    fcfs(procTable,nprocs);
+    for(int p=0; p<nprocs; p++){
+        cleanProcess(procTable[p]);
+    }
+    free(procTable);
+    clean();
+    return EXIT_SUCCESS;
 }
-void fcfs(Process * procTable){
-    int notdone = 1;
-    int time_total = 0;
-    for(int i = 0; i < 3; i ++){
-        time_total += procTable[i].time;
-    }
+   
     
-    while(notdone){
-        for(int time = 0; time < time_total; i++){
-            Process selected;
-            //if(time>=)
-            //ORDENAR LA LLISTA DE PROCESSOS.
-        }
-    }
 
+void usage(){
+      fprintf(stderr,
+      " usage:\n"
+      "    ./schsim  [-a [fcfs,sjf,rr,priorities]] [-h] [-m] [-f inputFile]\n"
+      "       -a  [fcfs,sjf,rr,priorities]  \n"
+      "       -m    [preemptive,nonpreemptive]  \n"
+      "       -h:            print out this help message\n"
+      "       -f file.csv:  read process table from csv file\n"
+      "       -v activate verbose \n"
+      "\n");
 }
-void initProcTable(Process *procTable){
-    procTable = malloc(3*sizeof(Process));
-    for (int i =0; i< 3;i++){
-        Process p;
-        p.id=i;
-        p.name=malloc(bufsize*sizeof(char));
-        p.burst=0;
-        p.time=0;
-        p.life = 0;
-        procTable[i]=p;
-    }
-    /*És la diapositiva 15 de la setmana 11. Les dades introduïdes següents:*/
-    procTable[0].burst=7;
-    procTable[0].time=0;
-    procTable[1].burst = 4;
-    procTable[1].time = 2;
-    procTable[2].burst = 2;
-    procTable[2].time = 3;
+
+void clean(){
+    // Cleanning dynamic memory
+    if (algorithm != NULL)
+        free(algorithm);
+
+    if (filename != NULL)
+        free(filename);
+
+    if (modality != NULL)
+        free(modality);
 }
