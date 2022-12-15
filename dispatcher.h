@@ -17,7 +17,13 @@ static const char * const modalitiesNames[] = {
 
 int num_algorithms(void);
 int num_modalities(void);
-size_t initProcTable(Process ** procTable);
-void fcfs(Process * procTable, size_t nprocs);
+
+size_t initFromCSVFile(char* filename, Process** procTable);
+
+int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality);
+void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable );
+void printSimulation(size_t nprocs, Process *procTable, size_t duration);
+int getCurrentBurst(Process* proc, int current_time);
+size_t getTotalCPU(Process *procTable, size_t nprocs);
 
 #endif

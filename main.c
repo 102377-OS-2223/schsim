@@ -61,16 +61,37 @@ int main(int argc, char *argv[]){
     }
 
     log_set_quiet(!verbose);
+if ( algorithm != NULL && filename != NULL && modality != NULL){
 
-
-    //@Jordi: Aqui cridem a la funció del dispatcher en funció dels paràmetres ara simplemnt crido a la funció
-    Process* procTable; 
-    size_t nprocs = initProcTable(&procTable);
-    fcfs(procTable,nprocs);
-    for(int p=0; p<nprocs; p++){
-        cleanProcess(procTable[p]);
+        Process * procTable;
+        size_t nprocs = initFromCSVFile(filename, &procTable);
+        
+        if (strncmp(algorithm, algorithmsNames[FCFS], sizeof(algorithmsNames[FCFS])/sizeof(char *))==0){
+            if (strncmp(modality, modalitiesNames[PREEMPTIVE], sizeof(modalitiesNames[PREEMPTIVE])/sizeof(char *) ) == 0){
+                printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[FCFS],
+                 modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);
+            }
+            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE);
+        }else if (strcmp(algorithm, algorithmsNames[SJF])==0){
+            if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
+                run_dispatcher(procTable,nprocs,SJF,PREEMPTIVE);
+            }else{
+                run_dispatcher(procTable,nprocs,SJF,NONPREEMPTIVE);
+            }
+            
+        }else if (strcmp(algorithm, algorithmsNames[PRIORITIES])==0){
+            if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
+                run_dispatcher(procTable,nprocs,PRIORITIES,PREEMPTIVE);
+            }else{
+                run_dispatcher(procTable,nprocs,PRIORITIES,NONPREEMPTIVE);
+            }     
+        }
+    
+        free(procTable);
+    } else {
+        fprintf(stderr, "algorithm:filename:modality are required to run simulation.\n");
     }
-    free(procTable);
+
     clean();
     return EXIT_SUCCESS;
 }
