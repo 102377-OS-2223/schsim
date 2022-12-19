@@ -7,6 +7,11 @@
 #include "log.h"
 #include "dispatcher.h"
 
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define BLU   "\x1B[34m"
+#define WHT   "\x1B[37m"
+
 int num_algorithms() {
   return sizeof(algorithmsNames) / sizeof(char *);
 }
@@ -187,9 +192,9 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
-                        current.lifecycle[t]==Bloqued ? "B" :   
-                        current.lifecycle[t]==Finished ? "F" : " "));
+                printf("|%2s",  (current.lifecycle[t]==Running ? GRN " E" WHT: 
+                        current.lifecycle[t]==Bloqued ? RED " B" WHT:   
+                        current.lifecycle[t]==Finished ? BLU " F" WHT : "  "));
             }
             printf ("|\n");
         

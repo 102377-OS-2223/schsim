@@ -99,15 +99,15 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
     
 
 void usage(){
-      fprintf(stderr,
-      " usage:\n"
-      "    ./schsim  [-a [fcfs,sjf,rr,priorities]] [-h] [-m] [-f inputFile]\n"
-      "       -a  [fcfs,sjf,rr,priorities]  \n"
-      "       -m    [preemptive,nonpreemptive]  \n"
-      "       -h:            print out this help message\n"
-      "       -f file.csv:  read process table from csv file\n"
-      "       -v activate verbose \n"
-      "\n");
+    fprintf(stderr,
+    " usage:\n"
+    "    ./schsim  [-a [fcfs,sjf,rr,priorities]] [-h] [-m] [-f inputFile]\n"
+    "       -a  [fcfs,sjf,rr,priorities]  \n"
+    "       -m    [preemptive,nonpreemptive]  \n"
+    "       -h:            print out this help message\n"
+    "       -f file.csv:  read process table from csv file\n"
+    "       -v activate verbose \n"
+    "\n");
 }
 
 void clean(){
