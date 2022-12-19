@@ -17,6 +17,7 @@ void cleanProcess(Process proces){
     }
 };
 
+
 Process initProcessFromTokens(char* line, char* separator){
 
   const size_t BUFSIZE = 32;   

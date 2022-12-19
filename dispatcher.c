@@ -183,13 +183,17 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
     }
     printf ("|\n");
 
+    
+    
     for (int p=0; p<nprocs; p++ ){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
-                        current.lifecycle[t]==Bloqued ? "B" :   
-                        current.lifecycle[t]==Finished ? "F" : " "));
+                //printValueOfCurrentProcessInTime(Process current, int time);
+                printValueOfCurrentProcessInTime(current, t);
+                //printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
+                      //  current.lifecycle[t]==Bloqued ? "B" :   
+                      //  current.lifecycle[t]==Finished ? "F" : " "));
             }
             printf ("|\n");
         
@@ -197,6 +201,24 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
 
 
 }
+void printValueOfCurrentProcessInTime(Process current, int time){
+    if(current.lifecycle[time]==Running){
+        printf("|");
+        printf(KGRN"%2s"KNRM, "E");
+    }
+    else if(current.lifecycle[time]==Bloqued){
+        printf("|");
+        printf(KYEL"%2s"KNRM, "B");
+    }
+    else if(current.lifecycle[time]==Finished){
+        printf("|");
+        printf(KRED"%2s"KNRM, "F");
+    }
+    else{
+        printf("|  ");
+    }
+}
+
 
 void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
 
