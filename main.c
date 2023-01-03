@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
                         }
                     }
                      if (algorithm == NULL){
-                        fprintf(stderr, "No such algorithm: %s\n", optarg);
+                        fprintf(stderr, RED "No such algorithm: %s\n" RESET, optarg);
                         clean();
                         return EXIT_FAILURE;
                     }
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
                         }
                     }
                     if (modality == NULL){
-                        fprintf(stderr, "No such modality: %s\n", optarg);
+                        fprintf(stderr, RED "No such modality: %s\n" RESET, optarg);
                         clean();
                         return EXIT_FAILURE;
                     }
@@ -89,7 +89,7 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
     
         free(procTable);
     } else {
-        fprintf(stderr, "algorithm:filename:modality are required to run simulation.\n");
+        fprintf(stderr, RED "algorithm:filename:modality are required to run simulation.\n" RESET);
     }
 
     clean();

@@ -187,9 +187,9 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
-                        current.lifecycle[t]==Bloqued ? "B" :   
-                        current.lifecycle[t]==Finished ? "F" : " "));
+                printf("|%2s",  (current.lifecycle[t]==Running ? BLUE "E" RESET:  //afegim colors per diferenciar els estats de cada procés
+                        current.lifecycle[t]==Bloqued ? YELLOW "B" RESET:   
+                        current.lifecycle[t]==Finished ?GREEN "F" RESET : " "));
             }
             printf ("|\n");
         

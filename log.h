@@ -8,6 +8,17 @@
 #ifndef LOG_H
 #define LOG_H
 
+// definim els colors que utilitzarem a log.h ja que es una llibreria que també trobem inclosa al main.c
+#define BLACK "\x1b[30m"
+#define RED "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define YELLOW "\x1b[33m"
+#define BLUE "\x1b[34m"
+#define MAGENTA "\x1b[35m"
+#define CYAN "\x1b[36m"
+#define WHITE "\x1b[37m"
+#define RESET "\x1b[0m"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
