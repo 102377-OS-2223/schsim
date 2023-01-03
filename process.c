@@ -34,8 +34,9 @@ Process initProcessFromTokens(char* line, char* separator){
                 p.id=atoi(feature);
                 break;
             case 1:
-                p.name=malloc(sizeof(feature));
-                strcpy(p.name,feature);
+                size_t len = strlen(feature);
+                p.name = malloc(len + 1);
+                strcpy(p.name, feature);
                 break;
             case 2:
                 p.priority=atoi(feature);
