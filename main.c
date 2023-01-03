@@ -67,6 +67,7 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
         size_t nprocs = initFromCSVFile(filename, &procTable);
         
         if (strncmp(algorithm, algorithmsNames[FCFS], sizeof(algorithmsNames[FCFS])/sizeof(char *))==0){
+            log_debug("Executant FCFS");
             if (strncmp(modality, modalitiesNames[PREEMPTIVE], sizeof(modalitiesNames[PREEMPTIVE])/sizeof(char *) ) == 0){
                 printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[FCFS],
                  modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);

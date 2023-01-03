@@ -74,9 +74,18 @@ int getCurrentBurst(Process* proc, int current_time){
 
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
 
+    if (algorithm == FCFS){
+        log_info("Running fcfs simulation...");
+    } else if (algorithm == PRIORITIES){
+        log_info("Running priorities simulation...");
+    } else if (algorithm == SJF){
+        log_info("Running sjf simulation...");
+    }
+
     Process * _proclist;
 
     qsort(procTable,nprocs,sizeof(Process),compareArrival);
+    log_debug("Sorting by arrival...");
 
     init_queue();
     size_t duration = getTotalCPU(procTable, nprocs) +1;
@@ -101,6 +110,8 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             {
                 current->lifecycle[t]=Bloqued;
                 enqueue(current);
+                log_info("Process enqued at t: %d", t);
+                printSimulation(nprocs,procTable,duration);
             }
 
             if(selected!=NULL && modality==PREEMPTIVE && t>=current->arrive_time && current->completed==false){  
@@ -146,22 +157,30 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                             selected->completed=true;
                             current->completed=true;
                             current->return_time= t + 1 - current->arrive_time;
-                            current->lifecycle[t+1]=Finished;                    }
+                            current->lifecycle[t+1]=Finished;
+                            log_info("Process finished at t: %d", t + 1);
+                            log_info("Process picked at t: %d", t + 1);
+                        }
                         
                     if ( current->id != selected->id ){
                             current->lifecycle[t]=Bloqued;
                             current->waiting_time++;
+                            log_info("Process needs to enter at t: %d", t);
+                            printSimulation(nprocs,procTable,duration);
                         }
 
                     }
-            } 
+            }
         }
+        
 
         if(selected->completed){
             selected=NULL;
         }
         
     }
+
+    log_info("Ending fcfs simulation...");
 
     printSimulation(nprocs,procTable,duration);
     printMetrics(duration-1,nprocs,procTable);
@@ -170,6 +189,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         cleanProcess(procTable[p]);
     }
     cleanQueue();
+    log_debug("Cleaning memory assigned to process..."); 
     return EXIT_SUCCESS;
 
 }
