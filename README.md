@@ -1,1 +1,1 @@
-# schsim# act07
+# schsim# act07 Joan Bonell i Ricard Bosch.

@@ -20,7 +20,7 @@ typedef struct _process
     int priority;
     int arrive_time;           
     // Informació de sortida del planificador
-    int* lifecycle;    // Vector d'unitats de temps. Cada posició indicarà l'estat del procés en un instant de temps determinat.    
+    char* lifecycle;    // Vector d'unitats de temps. Cada posició indicarà l'estat del procés en un instant de temps determinat.    
     int waiting_time;  //Temps espera    
     int return_time;   //Temps de retorn      
     int response_time; //Temps de resposta
@@ -38,6 +38,7 @@ int compareArrival(const void *s1, const void *s2);
 int compareBurst(const void *s1, const void *s2);
 int comparePriority(const void *s1, const void *s2);
 
-//@TODO: char* procToString(Process* p);
+//@TODO: 
+char* procToString(Process* p);
 
 #endif

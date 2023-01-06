@@ -15,7 +15,6 @@ int num_modalities() {
   return sizeof(modalitiesNames) / sizeof(char *);
 }
 
-
 size_t initFromCSVFile(char* filename, Process** procTable){
     FILE* f = fopen(filename,"r");
     
@@ -130,7 +129,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             selected = NULL;
             dequeue();
         }
-
+        
         // Aumenta el contador del tiempo (t)
         t++;
 
@@ -190,6 +189,12 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
       }
       printf("\033[0m"); // código ANSI para volver al color predeterminado
     }
+    if (selected != NULL) {
+        char* cadena = procToString(selected);
+        printf("Proceso seleccionado en t=%d: %s\n", t, cadena);
+        free(cadena);
+    }
+
         
     }
 
