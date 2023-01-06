@@ -15,7 +15,6 @@ int num_modalities() {
   return sizeof(modalitiesNames) / sizeof(char *);
 }
 
-
 size_t initFromCSVFile(char* filename, Process** procTable){
     FILE* f = fopen(filename,"r");
     
@@ -122,7 +121,18 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             }
             selected=dequeue();
 
-        } 
+        }
+
+        // Verifica si el proceso seleccionado ha terminado de ejecutarse
+        if (selected != NULL && selected->burst == getCurrentBurst(selected, t)) {
+            // El proceso seleccionado ha terminado de ejecutarse
+            selected = NULL;
+            dequeue();
+        }
+        
+        // Aumenta el contador del tiempo (t)
+        t++;
+
 
         if (selected != NULL){
             selected->lifecycle[t]=Running;
@@ -155,6 +165,36 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         if(selected->completed){
             selected=NULL;
         }
+
+        printf("[Tiempo %d] Estado de los procesos:\n", t);
+    for (int p=0; p<nprocs; p++ ){
+      Process* current = &procTable[p];
+      printf("  Proceso %d: ", current->id);
+      switch(current->lifecycle[t]) {
+        case Running:
+          printf("\033[0;32m"); // código ANSI para imprimir en verde
+          printf("Running\n");
+          break;
+        case Bloqued:
+          printf("\033[0;33m"); // código ANSI para imprimir en amarillo
+          printf("Bloqued\n");
+          break;
+        case Ready:
+          printf("\033[0;34m"); // código ANSI para imprimir en azul
+          printf("Ready\n");
+          break;
+        default:
+          printf("Unknown\n");
+          break;
+      }
+      printf("\033[0m"); // código ANSI para volver al color predeterminado
+    }
+    if (selected != NULL) {
+        char* cadena = procToString(selected);
+        printf("Proceso seleccionado en t=%d: %s\n", t, cadena);
+        free(cadena);
+    }
+
         
     }
 

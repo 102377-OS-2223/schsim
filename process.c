@@ -28,14 +28,15 @@ Process initProcessFromTokens(char* line, char* separator){
 
   int features = 0;
   while (feature != NULL) {
+            size_t len = strlen(feature);
             switch (features)
             {
             case 0:
                 p.id=atoi(feature);
                 break;
             case 1:
-                p.name=malloc(sizeof(feature));
-                strcpy(p.name,feature);
+                p.name = malloc(len + 1);
+                strcpy(p.name, feature);
                 break;
             case 2:
                 p.priority=atoi(feature);
@@ -88,6 +89,28 @@ int comparePriority(const void *s1, const void *s2){
     else
         return 0;
 }
+
+char* procToString(Process* p){
+
+    if (p == NULL){
+        printf("Error: puntero p es NULL\n");
+        return NULL;
+    }
+
+    if (p->lifecycle == NULL || strlen(p->lifecycle) == 0) {
+        printf("Error: campo lifecycle es NULL o tiene longitud cero.\n");
+        return NULL;
+    }
+    // determinar el tamaño de la cadena que necesitamos asignar
+    size_t tamaño_requerido = snprintf(NULL, 0, "{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[%s]}", p->id, p->name, p->burst, p->priority, p->arrive_time, p->lifecycle);
+    // asignar el espacio requerido, más uno para el terminador nulo
+    char* cadena = malloc(tamaño_requerido + 1);
+    // imprimir la información en el espacio asignado
+    sprintf(cadena, "{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[%s]}", p->id, p->name, p->burst, p->priority, p->arrive_time, p->lifecycle);
+    // devolver la cadena
+    return cadena;
+}
+
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
 //{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
