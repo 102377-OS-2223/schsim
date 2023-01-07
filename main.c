@@ -95,19 +95,27 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
     clean();
     return EXIT_SUCCESS;
 }
-   
-    
-
+ 
+ // Es millora la funció usage perquè mostri els algorismes i modalitats disponibles.
 void usage(){
-      fprintf(stderr,
-      " usage:\n"
-      "    ./schsim  [-a [fcfs,sjf,rr,priorities]] [-h] [-m] [-f inputFile]\n"
-      "       -a  [fcfs,sjf,rr,priorities]  \n"
-      "       -m    [preemptive,nonpreemptive]  \n"
-      "       -h:            print out this help message\n"
-      "       -f file.csv:  read process table from csv file\n"
-      "       -v activate verbose \n"
-      "\n");
+
+
+    printf("Usage: dispatcher [OPTIONS] algorithm:filename:modality \n");
+    printf("Options:\n");
+    printf("\t-h\t\tShow this help message\n");
+    printf("\t-v\t\tVerbose mode\n");
+    printf("\t-a\t\tAlgorithm to use\n");
+    printf("\t-f\t\tFilename to read from\n");
+    printf("\t-m\t\tModality to use\n");
+    printf("Algorithms:\n");
+    for (int i = 0; i < num_algorithms(); i++) {
+        printf("\t%s\n", algorithmsNames[i]);
+    }
+    printf("Modalities:\n");
+    for (int i = 0; i < num_modalities(); i++) {
+        printf("\t%s\n", modalitiesNames[i]);
+    }
+
 }
 
 void clean(){
