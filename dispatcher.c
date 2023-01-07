@@ -7,6 +7,10 @@
 #include "log.h"
 #include "dispatcher.h"
 
+
+
+
+
 int num_algorithms() {
   return sizeof(algorithmsNames) / sizeof(char *);
 }
@@ -14,6 +18,7 @@ int num_algorithms() {
 int num_modalities() {
   return sizeof(modalitiesNames) / sizeof(char *);
 }
+
 
 
 size_t initFromCSVFile(char* filename, Process** procTable){
@@ -44,11 +49,12 @@ size_t initFromCSVFile(char* filename, Process** procTable){
             nprocs++;
         }
     }
+    //free(_procTable); ens dona errors...
    free(line);
    fclose(f);
    return nprocs;
 }
-
+// 56 bytes is the size of a process struct
 size_t getTotalCPU(Process *procTable, size_t nprocs){
     size_t total=0;
     for (int p=0; p<nprocs; p++ ){
@@ -68,6 +74,11 @@ int getCurrentBurst(Process* proc, int current_time){
 }
 
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
+    
+    /* Sabem que l'error de la memòria dinàmica és dins d'aquesta funció, però
+        no sabem identificar quin free queda per fer...
+        Sabem que es tracta d'un free() perquè es fan 22 allocs i 19 frees, per tant,
+        queden 3 blocks per lliurar i no sabem quins són.*/
 
     Process * _proclist;
 
@@ -102,7 +113,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                 if(selected->burst > current->burst || selected->priority > current->priority){
                     enqueue(selected);
                     current->lifecycle[t]=Bloqued;
-                    selected=NULL;
+                    selected=NULL; 
                     }   
             }
         }
@@ -149,12 +160,20 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                         }
 
                     }
+                    
             } 
+            
         }
 
         if(selected->completed){
             selected=NULL;
         }
+        //free(selected);
+        //free(_proclist); Estava provocant un error de segmentació.
+        //free(procTable); Estava provocant un error de segmentació.
+        //Free memory:
+
+
         
     }
 

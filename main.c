@@ -72,7 +72,7 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
                 printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[FCFS],
                  modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);
             }
-            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE);
+            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE); 
         }else if (strcmp(algorithm, algorithmsNames[SJF])==0){
             if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
                 run_dispatcher(procTable,nprocs,SJF,PREEMPTIVE);
