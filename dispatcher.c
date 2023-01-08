@@ -70,9 +70,9 @@ int getCurrentBurst(Process* proc, int current_time){
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
 
     Process * _proclist;
-
+    log_info("Running %s simulation", algorithmsNames[algorithm]);
     qsort(procTable,nprocs,sizeof(Process),compareArrival);
-
+    log_debug("Sorted by arrival");
     init_queue();
     size_t duration = getTotalCPU(procTable, nprocs) +1;
 
@@ -96,18 +96,25 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             {
                 current->lifecycle[t]=Bloqued;
                 enqueue(current);
+                log_info("The dispatcher enqueued the process: %s by the arrival in t: %d", current->name, t);
+                log_info("Dispatcher needs to pick the next process.");                  
+                           
             }
-
+            
             if(selected!=NULL && modality==PREEMPTIVE && t>=current->arrive_time && current->completed==false){  
                 if(selected->burst > current->burst || selected->priority > current->priority){
                     enqueue(selected);
                     current->lifecycle[t]=Bloqued;
                     selected=NULL;
-                    }   
+                    }
+                 
             }
-        }
 
-        if (selected == NULL && get_queue_size() > 0){
+        log_info("Dispatcher at t: %d, picks process: %s", t, current->name);
+        
+        }
+        
+        if (selected == NULL && get_queue_size() > 0){            
             if(algorithm==SJF && get_queue_size()>1){
                 _proclist = transformQueueToList();
                 qsort(_proclist,get_queue_size(),sizeof(Process),compareBurst);
@@ -127,7 +134,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             selected=dequeue();
 
         } 
-
+        
         if (selected != NULL){
             selected->lifecycle[t]=Running;
             
@@ -159,8 +166,10 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         if(selected->completed){
             selected=NULL;
         }
-        
+        printSimulation(nprocs, procTable, (unsigned) t);
     }
+    log_info(" Ending fcfs simulation...");
+
 
     printSimulation(nprocs,procTable,duration);
     printMetrics(duration-1,nprocs,procTable);
