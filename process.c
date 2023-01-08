@@ -50,6 +50,7 @@ Process initProcessFromTokens(char* line, char* separator){
             features++;
     }
   free(feature);
+  free(p.name);
   return p;
 }
 
@@ -109,5 +110,6 @@ char* procToString(Process* p){
         
     }
     strcat(str,"]}");
+    free(str);
     return str;
 }
