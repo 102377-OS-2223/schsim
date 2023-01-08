@@ -206,8 +206,11 @@ void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
     }
     printf("\n");
 
+    /*printf("|Duration|Process|CPU|Throughput|\n");
+    printf("%ld,%ld,%lf,%lf\n", simulationCPUTime, nprocs, cpu_usage*100, throughput*100);
+
     printf("= Duration: %ld\n", simulationCPUTime );
-    printf("= Processes: %ld\n", nprocs );
+    printf("= Processes: %ld\n", nprocs );*/
 
     size_t baselineCPUTime = getTotalCPU(procTable, nprocs);
     double throughput = (double) nprocs / (double) simulationCPUTime;
