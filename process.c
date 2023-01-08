@@ -99,20 +99,15 @@ char* procToString(Process* p){
     {
         //if is running, add E
         if (p->lifecycle[i] == Running)
-        {
             strcat(str,"E");
-        }
-        //if is ready, add P
-        else if (p->lifecycle[i] == Ready)
-        {
-            strcat(str,"P");
-        }
         //if is bloqued, add B
         else if (p->lifecycle[i] == Bloqued)
-        {
             strcat(str,"B");
-        }
+        //if is finished, add F
+        else if (p->lifecycle[i] == Finished)
+            strcat(str,"F");
+        
     }
-    strcat(str,"F]}");
+    strcat(str,"]}");
     return str;
 }
