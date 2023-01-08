@@ -106,6 +106,21 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                     }   
             }
         }
+        // Implementació de l'algorisme Round Robin.
+        if(selected!=NULL && algorithm==RR && t>=selected->arrive_time && selected->completed==false){
+            if(getCurrentBurst(selected,t) == selected->burst){
+                selected->completed=true;
+                selected->return_time= t + 1 - selected->arrive_time; // t+1 perque el temps de retorn es el temps en que acaba el procés
+                selected->lifecycle[t+1]=Finished;
+                selected=NULL;
+            }
+            else if(getCurrentBurst(selected,t) % 2 == 0){ // 2 es el quantum
+                enqueue(selected);
+                selected=NULL;
+            }
+        }
+
+        
 
         if (selected == NULL && get_queue_size() > 0){
             if(algorithm==SJF && get_queue_size()>1){
@@ -171,6 +186,12 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
 
 void printSimulation(size_t nprocs, Process *procTable, size_t duration){
 
+
+    printf("%14s","== INFO ");
+
+
+    printf("\n");
+
     printf("%14s","== SIMULATION ");
     for (int t=0; t<duration; t++ ){
         printf("%5s","=====");
@@ -205,12 +226,6 @@ void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
         printf("%5s","=====");
     }
     printf("\n");
-
-    /*printf("|Duration|Process|CPU|Throughput|\n");
-    printf("%ld,%ld,%lf,%lf\n", simulationCPUTime, nprocs, cpu_usage*100, throughput*100);
-
-    printf("= Duration: %ld\n", simulationCPUTime );
-    printf("= Processes: %ld\n", nprocs );*/
 
     size_t baselineCPUTime = getTotalCPU(procTable, nprocs);
     double throughput = (double) nprocs / (double) simulationCPUTime;
