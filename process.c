@@ -15,7 +15,7 @@ void cleanProcess(Process proces){
     if (proces.name != NULL){
         free(proces.name);
     }
-
+    //added free lifecycle memory
     if (proces.lifecycle != NULL){
         free(proces.lifecycle);
     }
