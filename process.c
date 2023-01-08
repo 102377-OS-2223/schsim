@@ -11,10 +11,10 @@ void printProcess(Process proces){
 }
 
 void cleanProcess(Process proces){
-
     if (proces.name != NULL){
         free(proces.name);
     }
+    free(proces.lifecycle);
 };
 
 Process initProcessFromTokens(char* line, char* separator){
