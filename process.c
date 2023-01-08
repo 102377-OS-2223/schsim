@@ -94,7 +94,7 @@ int comparePriority(const void *s1, const void *s2){
 }
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
-//{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
+//{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} done
 char* procToString(Process* p){
 
     char* str = malloc(1024 * sizeof(char));
