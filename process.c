@@ -15,6 +15,12 @@ void cleanProcess(Process proces){
     if (proces.name != NULL){
         free(proces.name);
     }
+    //Solucionem l'error dels free que faltaven per fer.
+    //Ara no es produeixen errors de memòria dinàmica.
+    //Apartat 4: Fix Bugs.
+    if(proces.lifecycle != NULL){
+        free(proces.lifecycle);
+    }
 };
 
 
