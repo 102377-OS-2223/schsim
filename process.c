@@ -91,6 +91,23 @@ int comparePriority(const void *s1, const void *s2){
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
 //{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
-/* char* procToString(Process* p){
 
+
+/*char* procToString(Process* p){
+
+    int i = p -> id; //id del proces
+    char *n = p -> name; //name del proces
+    int b = p -> burst; //burst del proces
+    int prior = p -> priority; //priority del proces
+    int arr = p -> arrive_time; //arrive_time del proces
+    int *life = p -> lifecycle; //lifecycle del proces
+
+    //Anem concatenant cada part de l'info a procToString
+
+    strcat(i, procToString);
+    strcat(n, procToString);
+    strcat(b, procToString);
+    strcat(prior, procToString);
+    strcat(arr, procToString);
+    strcat(life, procToString);
 }*/
