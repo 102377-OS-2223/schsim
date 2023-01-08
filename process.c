@@ -109,6 +109,5 @@ char* procToString(Process* p){
         
     }
     strcat(str,"]}");
-    free(str);
     return str;
 }
