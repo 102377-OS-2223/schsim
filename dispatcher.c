@@ -7,7 +7,7 @@
 #include "log.h"
 #include "dispatcher.h"
 
-#define RED   "\x1B[31m"
+#define RED   "\x1B[31m" //Importem colors
 #define GRN   "\x1B[32m"
 #define BLU   "\x1B[34m"
 #define WHT   "\x1B[37m"
@@ -74,6 +74,8 @@ int getCurrentBurst(Process* proc, int current_time){
 
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
 
+    //Per a cada algoritme li fem un missatge diferent
+
     if (algorithm == FCFS){
         log_info("Running fcfs simulation...");
     } else if (algorithm == PRIORITIES){
@@ -85,7 +87,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
     Process * _proclist;
 
     qsort(procTable,nprocs,sizeof(Process),compareArrival);
-    log_debug("Sorting by arrival...");
+    log_debug("Sorting by arrival..."); //Informem de l'arrival
 
     init_queue();
     size_t duration = getTotalCPU(procTable, nprocs) +1;
@@ -110,8 +112,8 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             {
                 current->lifecycle[t]=Bloqued;
                 enqueue(current);
-                log_info("Process enqued at t: %d", t);
-                printSimulation(nprocs,procTable,duration);
+                log_info("Process enqued at t: %d", t); //Diem que el procés está sent enqueuat
+                printSimulation(nprocs,procTable,duration); //Imprimeix una taula cada cop que s'encua un proces
             }
 
             if(selected!=NULL && modality==PREEMPTIVE && t>=current->arrive_time && current->completed==false){  
@@ -158,15 +160,15 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                             current->completed=true;
                             current->return_time= t + 1 - current->arrive_time;
                             current->lifecycle[t+1]=Finished;
-                            log_info("Process finished at t: %d", t + 1);
+                            log_info("Process finished at t: %d", t + 1); //Quan acabi el proces posará que ja s'ha acaabat i agafa el següent
                             log_info("Process picked at t: %d", t + 1);
                         }
                         
                     if ( current->id != selected->id ){
                             current->lifecycle[t]=Bloqued;
                             current->waiting_time++;
-                            log_info("Process needs to enter at t: %d", t);
-                            printSimulation(nprocs,procTable,duration);
+                            log_info("Process needs to enter at t: %d", t); //Ens dirá que fa falta entrar un procés
+                            printSimulation(nprocs,procTable,duration); //Imprimirà una taula per cada moviment
                         }
 
                     }
@@ -179,8 +181,16 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         }
         
     }
+    
+    //Ens dirà que s'ha acabat la simulació en funció de l'algorisme utilitzat
 
-    log_info("Ending fcfs simulation...");
+    if (algorithm == FCFS){
+        log_info("Ending fcfs simulation...");
+    } else if (algorithm == PRIORITIES){
+        log_info("Ending priorities simulation...");
+    } else if (algorithm == SJF){
+        log_info("Ending sjf simulation...");
+    }
 
     printSimulation(nprocs,procTable,duration);
     printMetrics(duration-1,nprocs,procTable);
@@ -189,7 +199,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         cleanProcess(procTable[p]);
     }
     cleanQueue();
-    log_debug("Cleaning memory assigned to process..."); 
+    log_debug("Cleaning memory assigned to process..."); //Ens diu que està netejant la memoria
     return EXIT_SUCCESS;
 
 }
@@ -212,9 +222,9 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? GRN " E" WHT: 
-                        current.lifecycle[t]==Bloqued ? RED " B" WHT:   
-                        current.lifecycle[t]==Finished ? BLU " F" WHT : "  "));
+                printf("|%2s",  (current.lifecycle[t]==Running ? GRN " E" WHT: //E serà verda i després tornarà a ser-ne blanca
+                        current.lifecycle[t]==Bloqued ? RED " B" WHT: //B serà vermella i tornarà a ser blanca  
+                        current.lifecycle[t]==Finished ? BLU " F" WHT : "  ")); //F serà blava i tornarà a ser blanca
             }
             printf ("|\n");
         
