@@ -37,7 +37,10 @@ Process initProcessFromTokens(char* line, char* separator);
 int compareArrival(const void *s1, const void *s2);
 int compareBurst(const void *s1, const void *s2);
 int comparePriority(const void *s1, const void *s2);
+int compareArrivalWithQuantum(const void *s1, const void *s2);
 
 //@TODO: char* procToString(Process* p);
+char* procToString(Process* p);
+
 
 #endif

@@ -6,7 +6,7 @@
 #include "dispatcher.h"
 #include <getopt.h>
 
-#define OPTSTR "a:f:m:vh"
+#define OPTSTR "a:f:m:vh" // Options string
 
 void clean(void);
 void usage(void);
@@ -20,19 +20,20 @@ bool verbose = false;
 int main(int argc, char *argv[]){
 
     int opt;
-    while ((opt = getopt(argc, argv, OPTSTR)) != EOF)
+    while ((opt = getopt(argc, argv, OPTSTR)) != EOF) //   EOF = -1
         switch(opt) {
-            case 'h': usage(); 
+            case 'h':  // help
+                usage(); 
                 clean(); 
                 return EXIT_SUCCESS;
                 break;  
-            case 'v':
+            case 'v': // verbose
                 verbose = true;
                 break;
-            case 'f': 
+            case 'f': // filename
                     filename = strdup(optarg); 
                 break;
-            case 'a':
+            case 'a': // algorithm
                     for (int i = 0; i < num_algorithms(); i++) {
                         if (strcmp(optarg, algorithmsNames[i]) == 0) {
                             algorithm = strdup(optarg); 
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
                         return EXIT_FAILURE;
                     }
                     break;
-            case 'm':
+            case 'm': // modality
                     for (int i = 0; i < num_modalities(); i++) {
                         if (strcmp(optarg, modalitiesNames[i]) == 0) {
                             modality = strdup(optarg);
@@ -71,7 +72,7 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
                 printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[FCFS],
                  modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);
             }
-            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE);
+            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE); 
         }else if (strcmp(algorithm, algorithmsNames[SJF])==0){
             if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
                 run_dispatcher(procTable,nprocs,SJF,PREEMPTIVE);

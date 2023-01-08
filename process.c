@@ -15,7 +15,14 @@ void cleanProcess(Process proces){
     if (proces.name != NULL){
         free(proces.name);
     }
+    //Solucionem l'error dels free que faltaven per fer.
+    //Ara no es produeixen errors de memòria dinàmica.
+    //Apartat 4: Fix Bugs.
+    if(proces.lifecycle != NULL){
+        free(proces.lifecycle);
+    }
 };
+
 
 Process initProcessFromTokens(char* line, char* separator){
 
@@ -53,17 +60,33 @@ Process initProcessFromTokens(char* line, char* separator){
   return p;
 }
 
+
 int compareArrival(const void *s1, const void *s2){
     Process *p1 = (Process *)s1;
     Process *p2 = (Process *)s2;
-    if (p1->arrive_time > p2->arrive_time) 
+    if (p1->arrive_time > p2->arrive_time)
         return 1; 
     else if (p1->arrive_time < p2->arrive_time)  
         return -1;
     else
         return 0;
 }
-
+int compareArrivalWithQuantum(const void *s1, const void *s2){
+    Process *p1 = (Process *)s1;
+    Process *p2 = (Process *)s2;
+    if (p1->arrive_time > p2->arrive_time)
+        return 1; 
+    else if (p1->arrive_time < p2->arrive_time)  
+        return -1;
+    else{
+        if (p1->burst > p2->burst)
+            return 1; 
+        else if (p1->burst < p2->burst)  
+            return -1;
+        else
+            return 0;
+    }
+}
 int compareBurst(const void *s1, const void *s2){
     Process *p1 = (Process *)s1;
     Process *p2 = (Process *)s2;
@@ -91,6 +114,8 @@ int comparePriority(const void *s1, const void *s2){
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
 //{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
-/* char* procToString(Process* p){
-
-}*/
+char* procToString(Process* p){
+    char* str = malloc(sizeof(char)*100);
+    sprintf(str, "{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[%ls]; ...}", p->id, p->name, p->burst, p->priority, p->arrive_time, p->lifecycle);
+    return str;
+}

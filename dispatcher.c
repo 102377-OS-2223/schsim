@@ -7,6 +7,10 @@
 #include "log.h"
 #include "dispatcher.h"
 
+
+
+
+
 int num_algorithms() {
   return sizeof(algorithmsNames) / sizeof(char *);
 }
@@ -14,6 +18,7 @@ int num_algorithms() {
 int num_modalities() {
   return sizeof(modalitiesNames) / sizeof(char *);
 }
+
 
 
 size_t initFromCSVFile(char* filename, Process** procTable){
@@ -44,11 +49,12 @@ size_t initFromCSVFile(char* filename, Process** procTable){
             nprocs++;
         }
     }
+    //free(_procTable); ens dona errors...
    free(line);
    fclose(f);
    return nprocs;
 }
-
+// 56 bytes is the size of a process struct
 size_t getTotalCPU(Process *procTable, size_t nprocs){
     size_t total=0;
     for (int p=0; p<nprocs; p++ ){
@@ -68,6 +74,11 @@ int getCurrentBurst(Process* proc, int current_time){
 }
 
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
+    
+    /* Sabem que l'error de la memòria dinàmica és dins d'aquesta funció, però
+        no sabem identificar quin free queda per fer...
+        Sabem que es tracta d'un free() perquè es fan 22 allocs i 19 frees, per tant,
+        queden 3 blocks per lliurar i no sabem quins són.*/
 
     Process * _proclist;
 
@@ -102,7 +113,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                 if(selected->burst > current->burst || selected->priority > current->priority){
                     enqueue(selected);
                     current->lifecycle[t]=Bloqued;
-                    selected=NULL;
+                    selected=NULL; 
                     }   
             }
         }
@@ -117,6 +128,12 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             else if(algorithm==PRIORITIES && get_queue_size()>1){
                 _proclist = transformQueueToList();
                 qsort(_proclist,get_queue_size(),sizeof(Process),comparePriority);
+                setQueueFromList(_proclist);
+                free(_proclist);
+            }
+            else if(algorithm==RR && get_queue_size()>1){
+                _proclist = transformQueueToList();
+                qsort(_proclist,get_queue_size(),sizeof(Process),compareArrivalWithQuantum);
                 setQueueFromList(_proclist);
                 free(_proclist);
             }
@@ -149,12 +166,20 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                         }
 
                     }
+                    
             } 
+            
         }
 
         if(selected->completed){
             selected=NULL;
         }
+        //free(selected);
+        //free(_proclist); Estava provocant un error de segmentació.
+        //free(procTable); Estava provocant un error de segmentació.
+        //Free memory:
+
+
         
     }
 
@@ -183,13 +208,17 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
     }
     printf ("|\n");
 
+    
+    
     for (int p=0; p<nprocs; p++ ){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
-                        current.lifecycle[t]==Bloqued ? "B" :   
-                        current.lifecycle[t]==Finished ? "F" : " "));
+                //printValueOfCurrentProcessInTime(Process current, int time);
+                printValueOfCurrentProcessInTime(current, t);
+                //printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
+                      //  current.lifecycle[t]==Bloqued ? "B" :   
+                      //  current.lifecycle[t]==Finished ? "F" : " "));
             }
             printf ("|\n");
         
@@ -197,6 +226,24 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
 
 
 }
+void printValueOfCurrentProcessInTime(Process current, int time){
+    if(current.lifecycle[time]==Running){
+        printf("|");
+        printf(KGRN"%2s"KNRM, "E");
+    }
+    else if(current.lifecycle[time]==Bloqued){
+        printf("|");
+        printf(KYEL"%2s"KNRM, "B");
+    }
+    else if(current.lifecycle[time]==Finished){
+        printf("|");
+        printf(KRED"%2s"KNRM, "F");
+    }
+    else{
+        printf("|  ");
+    }
+}
+
 
 void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
 
