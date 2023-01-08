@@ -70,14 +70,14 @@ int getCurrentBurst(Process* proc, int current_time){
 int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
 
     Process * _proclist;
-
+    log_info("Running %s simulation", algorithmsNames[algorithm]);
     qsort(procTable,nprocs,sizeof(Process),compareArrival);
-
+    log_debug("Sorted by arrival");
     init_queue();
     size_t duration = getTotalCPU(procTable, nprocs) +1;
 
     for (int p=0; p<nprocs; p++ ){
-        procTable[p].lifecycle = malloc( duration * sizeof(int));
+        procTable[p].lifecycle = malloc(duration * sizeof(int));
         for(int t=0; t<duration; t++){
             procTable[p].lifecycle[t]=-1;
         }
@@ -96,18 +96,25 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             {
                 current->lifecycle[t]=Bloqued;
                 enqueue(current);
+                log_info("The dispatcher enqueued the process: %s by the arrival in t: %d", current->name, t);
+                log_info("Dispatcher needs to pick the next process.");                  
+                           
             }
-
+            
             if(selected!=NULL && modality==PREEMPTIVE && t>=current->arrive_time && current->completed==false){  
                 if(selected->burst > current->burst || selected->priority > current->priority){
                     enqueue(selected);
                     current->lifecycle[t]=Bloqued;
                     selected=NULL;
-                    }   
+                    }
+                 
             }
-        }
 
-        if (selected == NULL && get_queue_size() > 0){
+        log_info("Dispatcher at t: %d, picks process: %s", t, current->name);
+        
+        }
+        
+        if (selected == NULL && get_queue_size() > 0){            
             if(algorithm==SJF && get_queue_size()>1){
                 _proclist = transformQueueToList();
                 qsort(_proclist,get_queue_size(),sizeof(Process),compareBurst);
@@ -119,11 +126,15 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                 qsort(_proclist,get_queue_size(),sizeof(Process),comparePriority);
                 setQueueFromList(_proclist);
                 free(_proclist);
+            }/*
+            else if (algorithm==RR && get_queue_size()>1){
+                enqueue(dequeue());
             }
+            */
             selected=dequeue();
 
         } 
-
+        
         if (selected != NULL){
             selected->lifecycle[t]=Running;
             
@@ -155,8 +166,10 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
         if(selected->completed){
             selected=NULL;
         }
-        
+        printSimulation(nprocs, procTable, (unsigned) t);
     }
+    log_info(" Ending fcfs simulation...");
+
 
     printSimulation(nprocs,procTable,duration);
     printMetrics(duration-1,nprocs,procTable);
@@ -170,7 +183,6 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
 }
 
 void printSimulation(size_t nprocs, Process *procTable, size_t duration){
-
     printf("%14s","== SIMULATION ");
     for (int t=0; t<duration; t++ ){
         printf("%5s","=====");
@@ -182,17 +194,17 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         printf ("|%2d", t);
     }
     printf ("|\n");
-
+    
     for (int p=0; p<nprocs; p++ ){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? "E" : 
-                        current.lifecycle[t]==Bloqued ? "B" :   
-                        current.lifecycle[t]==Finished ? "F" : " "));
+                printf("|%2s",  (current.lifecycle[t]==Running ? BLUE " E" RESET:  //afegim colors per diferenciar els estats de cada procés
+                        current.lifecycle[t]==Bloqued ? YELLOW " B" RESET:   
+                        current.lifecycle[t]==Finished ?GREEN " F" RESET : " "));
             }
             printf ("|\n");
-        
+
     }
 
 
