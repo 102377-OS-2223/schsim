@@ -131,6 +131,12 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                 setQueueFromList(_proclist);
                 free(_proclist);
             }
+            else if(algorithm==RR && get_queue_size()>1){
+                _proclist = transformQueueToList();
+                qsort(_proclist,get_queue_size(),sizeof(Process),compareArrivalWithQuantum);
+                setQueueFromList(_proclist);
+                free(_proclist);
+            }
             selected=dequeue();
 
         } 

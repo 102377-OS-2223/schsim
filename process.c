@@ -60,17 +60,33 @@ Process initProcessFromTokens(char* line, char* separator){
   return p;
 }
 
+
 int compareArrival(const void *s1, const void *s2){
     Process *p1 = (Process *)s1;
     Process *p2 = (Process *)s2;
-    if (p1->arrive_time > p2->arrive_time) 
+    if (p1->arrive_time > p2->arrive_time)
         return 1; 
     else if (p1->arrive_time < p2->arrive_time)  
         return -1;
     else
         return 0;
 }
-
+int compareArrivalWithQuantum(const void *s1, const void *s2){
+    Process *p1 = (Process *)s1;
+    Process *p2 = (Process *)s2;
+    if (p1->arrive_time > p2->arrive_time)
+        return 1; 
+    else if (p1->arrive_time < p2->arrive_time)  
+        return -1;
+    else{
+        if (p1->burst > p2->burst)
+            return 1; 
+        else if (p1->burst < p2->burst)  
+            return -1;
+        else
+            return 0;
+    }
+}
 int compareBurst(const void *s1, const void *s2){
     Process *p1 = (Process *)s1;
     Process *p2 = (Process *)s2;
