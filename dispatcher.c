@@ -77,7 +77,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
     size_t duration = getTotalCPU(procTable, nprocs) +1;
 
     for (int p=0; p<nprocs; p++ ){
-        procTable[p].lifecycle = malloc( duration * sizeof(int));
+        procTable[p].lifecycle = malloc(duration * sizeof(int));
         for(int t=0; t<duration; t++){
             procTable[p].lifecycle[t]=-1;
         }
@@ -170,7 +170,6 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
 }
 
 void printSimulation(size_t nprocs, Process *procTable, size_t duration){
-
     printf("%14s","== SIMULATION ");
     for (int t=0; t<duration; t++ ){
         printf("%5s","=====");
@@ -182,17 +181,17 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         printf ("|%2d", t);
     }
     printf ("|\n");
-
+    
     for (int p=0; p<nprocs; p++ ){
         Process current = procTable[p];
             printf ("|%4s", current.name);
             for(int t=0; t<duration; t++){
-                printf("|%2s",  (current.lifecycle[t]==Running ? BLUE "E" RESET:  //afegim colors per diferenciar els estats de cada procés
-                        current.lifecycle[t]==Bloqued ? YELLOW "B" RESET:   
-                        current.lifecycle[t]==Finished ?GREEN "F" RESET : " "));
+                printf("|%2s",  (current.lifecycle[t]==Running ? BLUE " E" RESET:  //afegim colors per diferenciar els estats de cada procés
+                        current.lifecycle[t]==Bloqued ? YELLOW " B" RESET:   
+                        current.lifecycle[t]==Finished ?GREEN " F" RESET : " "));
             }
             printf ("|\n");
-        
+
     }
 
 

@@ -36,7 +36,7 @@ Process initProcessFromTokens(char* line, char* separator){
             case 1:
                 p.name=malloc(sizeof(feature));
                 strcpy(p.name,feature);
-                break;
+                break;      
             case 2:
                 p.priority=atoi(feature);
                 break;
@@ -91,6 +91,28 @@ int comparePriority(const void *s1, const void *s2){
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
 //{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
-/* char* procToString(Process* p){
 
-}*/
+char* procToString(Process* p){
+    char* str = malloc(1000);
+    sprintf(str,"{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[",p->id,p->name,p->burst,p->priority,p->arrive_time);
+    for (int i = 0; i < p->burst; i++)
+    {
+        //if is running, add E
+        if (p->lifecycle[i] == Running)
+        {
+            strcat(str,"E");
+        }
+        //if is ready, add P
+        else if (p->lifecycle[i] == Ready)
+        {
+            strcat(str,"P");
+        }
+        //if is bloqued, add B
+        else if (p->lifecycle[i] == Bloqued)
+        {
+            strcat(str,"B");
+        }
+    }
+    strcat(str,"F]}");
+    return str;
+}
