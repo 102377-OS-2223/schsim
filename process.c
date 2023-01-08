@@ -89,21 +89,13 @@ int comparePriority(const void *s1, const void *s2){
         return 0;
 }
 
-/*int Compareall(const void *s1, const void *s2,){
-    Process *p1 = (Process *)s1;
-    Process *p2 = (Process *)s2;
-    if (p1-> > p2) 
-        return 1; 
-    else if (p1 < p2)  
-        return -1;
-    else
-        return 0;
-}*/
-
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
 //{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
 
- /*char* procToString(Process* p){
+// Donem espai suficient per a la cadena de text
+ char* procToString(Process* p){
+    char* str = malloc(sizeof(char)*100);
+    sprintf(str, "{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[%s]; ...}", p->id, p->name, p->burst, p->priority, p->arrive_time, p->lifecycle); 
+    return str;
 
-
-}*/
+}
