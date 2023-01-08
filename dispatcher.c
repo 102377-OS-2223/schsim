@@ -67,9 +67,13 @@ int getCurrentBurst(Process* proc, int current_time){
     return burst;
 }
 
-int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality){
+int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modality, bool verbose){
 
     Process * _proclist;
+
+    log_info("Running %s simulation...", algorithmsNames[algorithm]);
+
+    log_info("Sorting by arrival time...");
 
     qsort(procTable,nprocs,sizeof(Process),compareArrival);
 
@@ -94,6 +98,7 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
             Process* current = &procTable[p];
             if (current->arrive_time == t)
             {
+                log_info("The dispatcher enqueued the process %d by the arrival in t: %d", current->id, t);
                 current->lifecycle[t]=Bloqued;
                 enqueue(current);
             }
@@ -119,12 +124,18 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                 qsort(_proclist,get_queue_size(),sizeof(Process),comparePriority);
                 setQueueFromList(_proclist);
                 free(_proclist);
+            } else if(algorithm==RR && get_queue_size()>1){
+                _proclist = transformQueueToList();
+                //implement round robin and quantum
+                setQueueFromList(_proclist);
+                free(_proclist);
             }
             selected=dequeue();
 
         } 
 
         if (selected != NULL){
+            log_info("The dispatcher selected the process %s in t: %d", selected->name, t);
             selected->lifecycle[t]=Running;
             
             for (int p=0; p<nprocs; p++ ){
@@ -149,7 +160,11 @@ int run_dispatcher(Process *procTable, size_t nprocs, int algorithm, int modalit
                         }
 
                     }
+
+                    
             } 
+            if(verbose)
+                printSimulation(nprocs,procTable,(unsigned)t);
         }
 
         if(selected->completed){
@@ -195,7 +210,6 @@ void printSimulation(size_t nprocs, Process *procTable, size_t duration){
         
     }
 
-
 }
 
 void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
@@ -213,8 +227,9 @@ void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
     double throughput = (double) nprocs / (double) simulationCPUTime;
     double cpu_usage = (double) simulationCPUTime / (double) baselineCPUTime;
 
-    printf("= CPU (Usage): %lf\n", cpu_usage*100 );
-    printf("= Throughput: %lf\n", throughput*100 );
+    //Valors mes facils de llegir al no tenir mes de 2 decimals
+    printf("= CPU (Usage): %.2lf\n", cpu_usage*100 );
+    printf("= Throughput: %.2lf\n", throughput*100 );
 
     double averageWaitingTime = 0;
     double averageResponseTime = 0;
@@ -228,10 +243,10 @@ void printMetrics(size_t simulationCPUTime, size_t nprocs, Process *procTable ){
             averageReturnTimeN += procTable[p].return_time / (double) procTable[p].burst;
     }
 
-
-    printf("= averageWaitingTime: %lf\n", (averageWaitingTime/(double) nprocs) );
-    printf("= averageResponseTime: %lf\n", (averageResponseTime/(double) nprocs) );
-    printf("= averageReturnTimeN: %lf\n", (averageReturnTimeN/(double) nprocs) );
-    printf("= averageReturnTime: %lf\n", (averageReturnTime/(double) nprocs) );
+    //Valors mes facils de llegir al no tenir mes de 3 decimals
+    printf("= averageWaitingTime: %.3lf\n", (averageWaitingTime/(double) nprocs) );
+    printf("= averageResponseTime: %.3lf\n", (averageResponseTime/(double) nprocs) );
+    printf("= averageReturnTimeN: %.3lf\n", (averageReturnTimeN/(double) nprocs) );
+    printf("= averageReturnTime: %.3lf\n", (averageReturnTime/(double) nprocs) );
 
 }

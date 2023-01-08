@@ -15,6 +15,10 @@ void cleanProcess(Process proces){
     if (proces.name != NULL){
         free(proces.name);
     }
+    //added free lifecycle memory
+    if (proces.lifecycle != NULL){
+        free(proces.lifecycle);
+    }
 };
 
 Process initProcessFromTokens(char* line, char* separator){
@@ -90,7 +94,35 @@ int comparePriority(const void *s1, const void *s2){
 }
 
 //@TODO: Aquesta funció ha de retorna un cadena de text amb la següent info:
-//{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} 
-/* char* procToString(Process* p){
+//{id:0; name:A; burst:7; priority:9; arrive_time:0; lifecycle:[EEEPPEF]; ...} done
+char* procToString(Process* p){
 
-}*/
+    char* str = malloc(1024 * sizeof(char));
+    char* lifecycle = malloc(1024 * sizeof(char));
+    strcpy(lifecycle, "");
+
+    for (int i = 0; i <= p->burst; i++)
+    {
+        switch (p->lifecycle[i])
+        {
+        case Ready:
+            strncat(lifecycle, "P", 1);
+            break;
+        case Running:
+            strncat(lifecycle, "E", 1);
+            break;
+        case Bloqued:   
+            strncat(lifecycle, "B", 1);
+            break;
+        case Finished:
+            strncat(lifecycle, "F", 1);
+            break;
+        }
+    }
+
+    sprintf(str, "{id:%d; name:%s; burst:%d; priority:%d; arrive_time:%d; lifecycle:[%s]; waiting_time:%d; return_time:%d; response_time:%d; completed:%d}", p->id, p->name, p->burst, p->priority, p->arrive_time, lifecycle, p->waiting_time, p->return_time, p->response_time, p->completed);
+    free(lifecycle);
+    
+    return str;
+
+}

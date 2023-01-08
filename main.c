@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
     }
 
     log_set_quiet(!verbose);
-if ( algorithm != NULL && filename != NULL && modality != NULL){
+    if ( algorithm != NULL && filename != NULL && modality != NULL){
 
         Process * procTable;
         size_t nprocs = initFromCSVFile(filename, &procTable);
@@ -71,20 +71,26 @@ if ( algorithm != NULL && filename != NULL && modality != NULL){
                 printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[FCFS],
                  modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);
             }
-            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE);
+            run_dispatcher(procTable,nprocs,FCFS,NONPREEMPTIVE, verbose);
         }else if (strcmp(algorithm, algorithmsNames[SJF])==0){
             if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
-                run_dispatcher(procTable,nprocs,SJF,PREEMPTIVE);
+                run_dispatcher(procTable,nprocs,SJF,PREEMPTIVE, verbose);
             }else{
-                run_dispatcher(procTable,nprocs,SJF,NONPREEMPTIVE);
+                run_dispatcher(procTable,nprocs,SJF,NONPREEMPTIVE, verbose);
             }
             
         }else if (strcmp(algorithm, algorithmsNames[PRIORITIES])==0){
             if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
-                run_dispatcher(procTable,nprocs,PRIORITIES,PREEMPTIVE);
+                run_dispatcher(procTable,nprocs,PRIORITIES,PREEMPTIVE, verbose);
             }else{
-                run_dispatcher(procTable,nprocs,PRIORITIES,NONPREEMPTIVE);
+                run_dispatcher(procTable,nprocs,PRIORITIES,NONPREEMPTIVE, verbose);
             }     
+        } else if (strcmp(algorithm, algorithmsNames[RR])==0){
+            if (strcmp(modality, modalitiesNames[PREEMPTIVE])==0){
+                printf("%s can not be executed in %s mode ... changing to %s\n",algorithmsNames[RR],
+                 modalitiesNames[PREEMPTIVE], modalitiesNames[NONPREEMPTIVE]);
+            }
+            run_dispatcher(procTable,nprocs,RR,NONPREEMPTIVE, verbose);
         }
     
         free(procTable);
